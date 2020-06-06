@@ -20,6 +20,12 @@ class InternalDeque<T> : AbstractMutableCollection<T>() {
         return Iterator()
     }
 
+    override fun clear() {
+        head = null
+        tail = null
+        _size = 0
+    }
+
     /**
      * Iterator to most recently added element using [addLast] or least recently – using [addFirst].
      */

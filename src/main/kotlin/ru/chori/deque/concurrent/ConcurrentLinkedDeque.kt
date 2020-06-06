@@ -1,40 +1,47 @@
 package ru.chori.deque.concurrent
 
+import sun.misc.ConditionLock
+
 /**
  * Blocking deque based on doubly linked list. The class is an adapter to the internal deque, proxying all operations to
- * it. Getter of [deque] is synchronized, so concurrent thread will have to wait, until another thread stop performing
- * it's operation. This guarantees that before thread accesses the [deque], [deque] will be in consistent state.
+ * it
  */
 class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
     override val isEmpty: Boolean
-        get() = deque.isEmpty()
+        @Synchronized get() = deque.isEmpty()
     override val size: Int
-        get() = deque.size
+        @Synchronized get() = deque.size
 
+    @Synchronized
     override fun clear() {
         deque.clear()
     }
 
+    @Synchronized
     override fun addFirst(value: T) {
         deque.addFirst(value)
     }
 
+    @Synchronized
     override fun addLast(value: T) {
         deque.addLast(value)
     }
 
+    @Synchronized
     override fun peekFirst(): T? {
         val iterator: MutableIterator<T> = deque.iterator()
 
         return if (iterator.hasNext()) iterator.next() else null
     }
 
+    @Synchronized
     override fun peekLast(): T? {
         val iterator: MutableIterator<T> = deque.iteratorToLast()
 
         return if (iterator.hasNext()) iterator.next() else null
     }
 
+    @Synchronized
     override fun pollFirst(): T? {
         val iterator: MutableIterator<T> = deque.iterator()
 
@@ -46,6 +53,7 @@ class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
         return element
     }
 
+    @Synchronized
     override fun pollLast(): T? {
         val iterator: MutableIterator<T> = deque.iteratorToLast()
 
@@ -57,8 +65,8 @@ class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
         return element
     }
 
+    @Synchronized
     override fun contains(value: T): Boolean = deque.contains(value)
 
     private val deque: InternalDeque<T> = InternalDeque()
-        @Synchronized get
 }

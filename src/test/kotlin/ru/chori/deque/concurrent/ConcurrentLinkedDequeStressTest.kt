@@ -1,11 +1,11 @@
 package ru.chori.deque.concurrent
 
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.junit.Test
 import java.util.*
 import java.util.concurrent.LinkedBlockingDeque
 import kotlin.random.Random
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ConcurrentLinkedDequeStressTest {
     companion object {
@@ -44,11 +44,9 @@ class ConcurrentLinkedDequeStressTest {
                 }
             }
 
-            assertTrue {
-                expected.stream().allMatch {
-                    actual.contains(it)
-                }
-            }
+            assertTrue(expected.stream().allMatch {
+                actual.contains(it)
+            })
         }
     }
 }
