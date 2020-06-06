@@ -53,28 +53,41 @@ class InternalDeque<T> : AbstractMutableCollection<T>() {
         _size++
     }
 
-    private data class Node<T>(val data: T, var prev: Node<T>? = null, var next: Node<T>? = null)
+    private data class Node<T>(val data: T, var prev: Node<T>? = null, var next: Node<T>? = null) {
+        override fun toString(): String {
+            return "Node(data=$data)"
+        }
+    }
 
     private var head: Node<T>? = null
     private var tail: Node<T>? = null
     private var _size: Int = 0
 
     private inner class Iterator(var current: Node<T>? = head) : MutableIterator<T> {
+        var last: Node<T>? = null
+
         override fun hasNext(): Boolean = current != null
 
         override fun next(): T {
             val element: T? = current?.data
+
+            last = current
             current = current?.next
 
             return element ?: throw NoSuchElementException()
         }
 
         override fun remove() {
-            current?.prev?.next = current?.next
-            current?.next?.prev = current?.prev
+            if (last == null) throw IllegalStateException()
 
-            if (current == head) head = current?.next
-            if (current == tail) tail = current?.prev
+            last?.prev?.next = last?.next
+            last?.next?.prev = last?.prev
+
+            if (last == head) head = last?.next
+            if (last == tail) tail = last?.prev
+
+            _size--
+            last = null
         }
     }
 }
