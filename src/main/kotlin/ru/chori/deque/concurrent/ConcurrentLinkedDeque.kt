@@ -2,39 +2,58 @@ package ru.chori.deque.concurrent
 
 class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
     override val isEmpty: Boolean
-        get() = TODO("Not yet implemented")
+        get() = list.isEmpty()
     override val size: Int
-        get() = TODO("Not yet implemented")
+        get() = list.size
 
     override fun clear() {
-        TODO("Not yet implemented")
+        list.clear()
     }
 
     override fun addFirst(value: T) {
-        TODO("Not yet implemented")
+        list.addFirst(value)
     }
 
     override fun addLast(value: T) {
-        TODO("Not yet implemented")
+        list.addLast(value)
     }
 
     override fun peekFirst(): T? {
-        TODO("Not yet implemented")
+        val iterator: MutableIterator<T> = list.iterator()
+
+        return if (iterator.hasNext()) iterator.next() else null
     }
 
     override fun peekLast(): T? {
-        TODO("Not yet implemented")
+        val iterator: MutableIterator<T> = list.iteratorToLast()
+
+        return if (iterator.hasNext()) iterator.next() else null
     }
 
     override fun pollFirst(): T? {
-        TODO("Not yet implemented")
+        val iterator: MutableIterator<T> = list.iterator()
+
+        if (!iterator.hasNext()) return null
+
+        val element: T = iterator.next()
+        iterator.remove()
+
+        return element
     }
 
     override fun pollLast(): T? {
-        TODO("Not yet implemented")
+        val iterator: MutableIterator<T> = list.iteratorToLast()
+
+        if (!iterator.hasNext()) return null
+
+        val element: T = iterator.next()
+        iterator.remove()
+
+        return element
     }
 
-    override fun contains(value: T): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun contains(value: T): Boolean = list.contains(value)
+
+    private val list: InternalDequeue<T> = InternalDequeue()
+        @Synchronized get
 }
