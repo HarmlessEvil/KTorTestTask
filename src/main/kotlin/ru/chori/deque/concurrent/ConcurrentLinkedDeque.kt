@@ -1,37 +1,42 @@
 package ru.chori.deque.concurrent
 
+/**
+ * Blocking deque based on doubly linked list. The class is an adapter to the internal deque, proxying all operations to
+ * it. Getter of [deque] is synchronized, so concurrent thread will have to wait, until another thread stop performing
+ * it's operation. This guarantees that before thread accesses the [deque], [deque] will be in consistent state.
+ */
 class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
     override val isEmpty: Boolean
-        get() = list.isEmpty()
+        get() = deque.isEmpty()
     override val size: Int
-        get() = list.size
+        get() = deque.size
 
     override fun clear() {
-        list.clear()
+        deque.clear()
     }
 
     override fun addFirst(value: T) {
-        list.addFirst(value)
+        deque.addFirst(value)
     }
 
     override fun addLast(value: T) {
-        list.addLast(value)
+        deque.addLast(value)
     }
 
     override fun peekFirst(): T? {
-        val iterator: MutableIterator<T> = list.iterator()
+        val iterator: MutableIterator<T> = deque.iterator()
 
         return if (iterator.hasNext()) iterator.next() else null
     }
 
     override fun peekLast(): T? {
-        val iterator: MutableIterator<T> = list.iteratorToLast()
+        val iterator: MutableIterator<T> = deque.iteratorToLast()
 
         return if (iterator.hasNext()) iterator.next() else null
     }
 
     override fun pollFirst(): T? {
-        val iterator: MutableIterator<T> = list.iterator()
+        val iterator: MutableIterator<T> = deque.iterator()
 
         if (!iterator.hasNext()) return null
 
@@ -42,7 +47,7 @@ class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
     }
 
     override fun pollLast(): T? {
-        val iterator: MutableIterator<T> = list.iteratorToLast()
+        val iterator: MutableIterator<T> = deque.iteratorToLast()
 
         if (!iterator.hasNext()) return null
 
@@ -52,8 +57,8 @@ class ConcurrentLinkedDeque<T> : ConcurrentDeque<T> {
         return element
     }
 
-    override fun contains(value: T): Boolean = list.contains(value)
+    override fun contains(value: T): Boolean = deque.contains(value)
 
-    private val list: InternalDequeue<T> = InternalDequeue()
+    private val deque: InternalDeque<T> = InternalDeque()
         @Synchronized get
 }

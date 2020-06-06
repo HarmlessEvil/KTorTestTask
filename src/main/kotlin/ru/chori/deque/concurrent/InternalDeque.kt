@@ -1,11 +1,15 @@
 package ru.chori.deque.concurrent
 
-class InternalDequeue<T> : AbstractMutableCollection<T>() {
+/**
+ * Synchronous deque, that supports querying first and last element
+ */
+class InternalDeque<T> : AbstractMutableCollection<T>() {
     override val size: Int
         get() = _size
 
     /**
-     * This method proxies to [addFirst]
+     * This method proxies to [addFirst]. This might mean that "natural" order of inserting elements is to this end of
+     * deque.
      */
     override fun add(element: T): Boolean {
         addFirst(element)
@@ -16,10 +20,16 @@ class InternalDequeue<T> : AbstractMutableCollection<T>() {
         return Iterator()
     }
 
+    /**
+     * Iterator to most recently added element using [addLast] or least recently – using [addFirst].
+     */
     fun iteratorToLast(): MutableIterator<T> {
         return Iterator(tail)
     }
 
+    /**
+     * Adds [element] to beginning of the deque.
+     */
     fun addFirst(element: T) {
         val current: Node<T> = Node(element, null, head)
         head?.prev = current
@@ -30,6 +40,9 @@ class InternalDequeue<T> : AbstractMutableCollection<T>() {
         _size++
     }
 
+    /**
+     * Adds [element] to the end of deque.
+     */
     fun addLast(element: T) {
         val current: Node<T> = Node(element, tail, null)
         tail?.next = current
